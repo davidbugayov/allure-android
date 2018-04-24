@@ -9,7 +9,7 @@ import java.io.File
 /**
  * @author Badya on 18.04.2017.
  */
-open class FileSystemResultsReader(val resultsDir: File = FileSystemResultsReader.getDefaultResultsDir(),
+open class FileSystemResultsReader(val resultsDir: ResultDirFactory = lazy { FileSystemResultsReader.getDefaultResultsDir().also { it.mkdirs() } },
                                    val serializationProcessor: SerializationProcessor = GsonSerializationProcessor) : AllureResultsReader {
 
     companion object {
@@ -17,7 +17,7 @@ open class FileSystemResultsReader(val resultsDir: File = FileSystemResultsReade
         fun getDefaultResultsDir() = File(System.getProperty("allure.results.directory", "build/allure-results"))
     }
 
-    override fun getAttachmentFile(src: String): File = File(resultsDir, src)
+    override fun getAttachmentFile(src: String): File = File(resultsDir.value, src)
 
     override fun <T> read(uuid: String, type: Class<T>): T {
         val file = when (type) {
@@ -29,7 +29,7 @@ open class FileSystemResultsReader(val resultsDir: File = FileSystemResultsReade
         return serializationProcessor.deserialize(file, type)
     }
 
-    fun listResults(): Array<out File>? = resultsDir.listFiles()
+    fun listResults(): Array<out File>? = resultsDir.value.listFiles()
 }
 
 class AllureResultsReadException : RuntimeException {
