@@ -12,26 +12,31 @@ import java.io.InputStream
 /**
  * @author Badya on 18.04.2017.
  */
-open class FileSystemResultsWriter(val resultsDir: ResultDirFactory = lazy { FileSystemResultsWriter.getDefaultResultsDir().also { it.mkdirs() } },
+open class FileSystemResultsWriter(val resultsDir: File = FileSystemResultsWriter.getDefaultResultsDir(),
                                    val serializationProcessor: SerializationProcessor = GsonSerializationProcessor) : AllureResultsWriter {
     companion object {
         @JvmStatic
-        fun getDefaultResultsDir() = File(System.getProperty("allure.results.directory", "build/allure-results"))
+        fun getDefaultResultsDir() =
+                File(System.getProperty("allure.results.directory", "build/allure-results"))
+    }
+
+    init {
+        resultsDir.mkdirs()
     }
 
     override fun write(testResult: TestResult) =
             serializationProcessor.serialize(
-                    File(resultsDir.value, generateTestResultName(testResult.uuid)),
+                    File(resultsDir, generateTestResultName(testResult.uuid)),
                     testResult)
 
 
     override fun write(testResultContainer: TestResultContainer) =
             serializationProcessor.serialize(
-                    File(resultsDir.value, generateTestResultContainerName(testResultContainer.uuid)),
+                    File(resultsDir, generateTestResultContainerName(testResultContainer.uuid)),
                     testResultContainer)
 
 
-    override fun write(dest: String, attachment: InputStream) = write(File(resultsDir.value, dest), attachment)
+    override fun write(dest: String, attachment: InputStream) = write(File(resultsDir, dest), attachment)
 
     private fun write(dest: File, attachment: InputStream) {
         try {
@@ -47,7 +52,7 @@ open class FileSystemResultsWriter(val resultsDir: ResultDirFactory = lazy { Fil
 
     override fun copy(src: File, dest: File) {
         try {
-            src.copyTo(resultsDir.value.resolve(dest), true)
+            src.copyTo(resultsDir.resolve(dest), true)
         } catch (e: IOException) {
             throw AllureResultsWriteException("Could not move attachment from ${src.absolutePath} to ${dest.absolutePath}", e)
         }
