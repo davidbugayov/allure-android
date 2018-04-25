@@ -10,7 +10,7 @@ import java.io.StringWriter
 data class Extra(
         @SerializedName("severity") val severity:String = "normal",//пока оставим таким
         // образом если как то повлияет на отчет, то добавим обработку
-        @SerializedName("retries") var retries: RetryItem? = null) {
+        @SerializedName("retries") var retries: ArrayList<RetryItem>? = null) {
 
     companion object {
         @JvmStatic
