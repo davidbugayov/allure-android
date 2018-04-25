@@ -14,5 +14,8 @@ class TestResult(
         @SerializedName("rerunOf") var rerunOf: String? = null,
         @SerializedName("fullName") var fullName: String? = null,
         @SerializedName("labels") var labels: List<Label> = ArrayList(),
-        @SerializedName("links") var links: List<Link> = ArrayList()
+        @SerializedName("links") var links: List<Link> = ArrayList(),
+        @SerializedName("hidden") val hidden: Boolean = false,
+        @SerializedName("retry") val retry: Boolean = false,
+        @SerializedName("extra") val extra: Extra? = null
 ) : ExecutableItem(name = name)
