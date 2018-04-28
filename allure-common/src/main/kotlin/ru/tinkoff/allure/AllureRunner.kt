@@ -14,7 +14,7 @@ open class AllureRunner(klass: Class<*>) : BlockJUnit4ClassRunner(klass) {
         try {
             super.run(notifier)
         } finally {
-            listener.testRunFinished()
+            listener. testRunFinished()
             notifier.removeListener(listener)
         }
     }
