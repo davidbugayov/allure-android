@@ -21,7 +21,7 @@ ext {
     kotlinVersion = '1.2.0'
     dexCountVersion = '0.8.1'
 
-    projectVersion = getVersionName('2.5.1')
+    projectVersion = getVersionName('2.5.2')
 }
 
 def getVersionName(version) {
