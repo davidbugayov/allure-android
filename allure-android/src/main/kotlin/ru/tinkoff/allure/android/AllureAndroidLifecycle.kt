@@ -3,6 +3,7 @@ package ru.tinkoff.allure.android
 import android.os.Build
 import android.os.Environment
 import ru.tinkoff.allure.AllureLifecycle
+import ru.tinkoff.allure.android.Constants.RESULTS_FOLDER
 import ru.tinkoff.allure.io.FileSystemResultsReader
 import ru.tinkoff.allure.io.FileSystemResultsWriter
 import java.io.File
@@ -11,8 +12,8 @@ import java.io.File
  * @author Badya on 06.06.2017.
  */
 object AllureAndroidLifecycle : AllureLifecycle(
-        FileSystemResultsReader(obtainDirectory("allure-results")),
-        FileSystemResultsWriter(obtainDirectory("allure-results")))
+        FileSystemResultsReader(obtainDirectory(RESULTS_FOLDER)),
+        FileSystemResultsWriter(obtainDirectory(RESULTS_FOLDER)))
 
 fun obtainDirectory(path: String): File {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
