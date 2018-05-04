@@ -11,3 +11,15 @@ allprojects {
     group 'ru.tinkoff.allure'
     version = rootProject.projectVersion
 }
+
+buildscript {
+    apply from: './gradle/versions.gradle'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.android.tools.build:gradle:3.1.2'
+    }
+}

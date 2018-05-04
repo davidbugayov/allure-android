@@ -18,7 +18,7 @@ ext {
 
     androidPlugin = '3.0.1'
     versionsPlugin = '0.11.3'
-    kotlinVersion = '1.2.0'
+    kotlinVersion = '1.2.41'
     dexCountVersion = '0.8.1'
 
     projectVersion = getVersionName('2.5.2')
