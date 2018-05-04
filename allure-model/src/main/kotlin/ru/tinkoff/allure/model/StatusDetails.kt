@@ -23,5 +23,11 @@ data class StatusDetails(
                     trace = StringWriter().also { e.printStackTrace(PrintWriter(it)) }.toString()
             )
         }
+
+        fun fromString(mes: String?): StatusDetails? {
+            return StatusDetails(
+                    message = mes
+            )
+        }
     }
 }
