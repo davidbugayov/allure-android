@@ -1,10 +1,9 @@
 package ru.tinkoff.allure.android
 
-import android.content.Context
 import android.os.Build
 import android.os.Environment
-import android.support.test.InstrumentationRegistry.getInstrumentation
 import ru.tinkoff.allure.AllureLifecycle
+import ru.tinkoff.allure.android.Constants.RESULTS_FOLDER
 import ru.tinkoff.allure.io.FileSystemResultsReader
 import ru.tinkoff.allure.io.FileSystemResultsWriter
 import java.io.File
@@ -13,13 +12,19 @@ import java.io.File
  * @author Badya on 06.06.2017.
  */
 object AllureAndroidLifecycle : AllureLifecycle(
-        FileSystemResultsReader(obtainDirectory("allure-results")),
-        FileSystemResultsWriter(obtainDirectory("allure-results")))
+        FileSystemResultsReader(obtainDirectory(RESULTS_FOLDER)),
+        FileSystemResultsWriter(obtainDirectory(RESULTS_FOLDER)))
 
 fun obtainDirectory(path: String): File {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        return File(Environment.getExternalStorageDirectory(), path)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        File(Environment.getExternalStorageDirectory(), path)
     } else {
-        return getInstrumentation().context.getDir(path, Context.MODE_PRIVATE)
-    }
+        // we can't get context through InstrumentationRegistry
+        // because it may not be ready yet when obtainDirectory method calls.
+        // So we try to get context through ContextHolder and write
+        // test in /data/data/<target_app_bundle_id>/allure-results
+        val context = ContextHolder.getTargetAppContext()
+        val applicationInfo = context.applicationInfo
+        File(applicationInfo.dataDir, path)
+    }.apply { if (!exists()) mkdirs() }
 }

@@ -116,7 +116,7 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
             writer.write(this)
             afterTestWrite(this)
         }
-        AllureStorage.clearStepContext()
+        // AllureStorage.clearStepContext()
     }
 
     open fun startStep(step: StepResult) = startStep(AllureStorage.getCurrentStep(), step)
