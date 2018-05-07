@@ -6,15 +6,15 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
 import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import ru.tinkoff.allure.AllureRunner
 import ru.tinkoff.allure.android.FailshotRule
 import ru.tinkoff.allure.step
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(AllureRunner::class)
 class ExampleInstrumentedTest {
 
     @get:Rule
