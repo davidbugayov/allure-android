@@ -16,7 +16,8 @@ abstract class ExecutableItem(
         @SerializedName("statusDetails") override var statusDetails: StatusDetails? = null,
         @SerializedName("steps") override var steps: MutableList<StepResult> = ArrayList(),
         @SerializedName("attachments") override var attachments: MutableList<Attachment> = ArrayList(),
-        @SerializedName("parameters") override var parameters: MutableList<Parameter> = ArrayList()
+        @SerializedName("parameters") override var parameters: MutableList<Parameter> = ArrayList(),
+        @Transient open var warnings: ArrayList<String> = ArrayList()
 ) : WithSteps, WithAttachments, WithParameters, WithStatusDetails {
     fun calcStatus() {
         fun updateStatusInfo(item: ExecutableItem) {
