@@ -12,8 +12,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import ru.tinkoff.allure.AllureRunListener;
-
 
 public class RetryRunner extends BlockJUnit4ClassRunner {
 
@@ -30,11 +28,11 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier,
                 getDescription());
         Statement statement = classBlock(notifier);
-        AllureRunListener listener = new AllureRunListener();
+        AllureAndroidListener listener = new AllureAndroidListener();
 
         try {
             notifier.addListener(listener);
-            listener.testRunStarted();
+            listener.testRunStarted(getDescription());
             statement.evaluate();
         } catch (AssumptionViolatedException e) {
             testNotifier.fireTestIgnored();
@@ -48,7 +46,7 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
                 e1.printStackTrace();
             }
 
-            retry(notifier, testNotifier, statement, e);
+           // retry(notifier, testNotifier, statement, e, getDescription());
         }
     }
 
@@ -74,28 +72,29 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
         } catch (AssumptionViolatedException e) {
             eachNotifier.addFailedAssumption(e);
         } catch (Throwable e) {
-            retry(notifier, eachNotifier, statement, e);
+            retry(notifier, eachNotifier, statement, e, description);
         } finally {
             eachNotifier.fireTestFinished();
         }
     }
 
-    public void retry(RunNotifier runNotifier, EachTestNotifier notifier, Statement statement, Throwable currentThrowable) {
+    public void retry(RunNotifier runNotifier, EachTestNotifier notifier, Statement statement, Throwable currentThrowable, Description des) {
         Throwable caughtThrowable = currentThrowable;
 
 
         while (retryCount > failedAttempts) {
-            AllureRunListener listener = new AllureRunListener();
+            AllureAndroidListener listener = new AllureAndroidListener();
+
             try {
                 runNotifier.addListener(listener);
-                listener.testRunStarted(getDescription());
+                listener.testStarted(des);
                 statement.evaluate();
                 return;
             } catch (Throwable t) {
                 failedAttempts++;
                 caughtThrowable = t;
                 try {
-                    listener.testFailure(new Failure(getDescription(), t));
+                    listener.testFailure(new Failure(des, t));
                     runNotifier.removeListener(listener);
                 } catch (Exception e1) {
                     e1.printStackTrace();
