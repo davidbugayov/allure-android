@@ -46,7 +46,7 @@ class AllureAndroidListener : InstrumentationRunListener() {
     private fun testFailed(uuid: String, failure: Failure) {
         with(lifecycle) {
             updateTestCase(uuid) {
-                status = Status.fromThrowable(failure.exception)
+                status = Status.FAILED
                 statusDetails = StatusDetails.fromThrowable(failure.exception)
             }
             writeTestCase(uuid)

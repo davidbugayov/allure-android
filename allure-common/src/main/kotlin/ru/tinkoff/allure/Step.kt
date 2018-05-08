@@ -51,7 +51,7 @@ class Step {
     fun stepThrown(t: Throwable) {
         with(lifecycle) {
             updateStep {
-                status = Status.fromThrowable(t)
+                status = Status.FAILED
                 statusDetails = StatusDetails.fromThrowable(t)
             }
         }
