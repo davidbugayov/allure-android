@@ -4,7 +4,6 @@ import org.junit.Ignore;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
-import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -15,38 +14,25 @@ import org.junit.runners.model.Statement;
 
 public class RetryRunner extends BlockJUnit4ClassRunner {
 
-    private final int retryCount = 3;
-    private int failedAttempts = 0;
+    private static final int RETRY_COUNT = 2;
 
-    public RetryRunner(Class<?> klass) throws InitializationError {
-        super(klass);
+    public RetryRunner(Class<?> clazz) throws InitializationError {
+        super(clazz);
     }
-
 
     @Override
     public void run(final RunNotifier notifier) {
-        EachTestNotifier testNotifier = new EachTestNotifier(notifier,
-                getDescription());
+        EachTestNotifier testNotifier = new EachTestNotifier(notifier, getDescription());
         Statement statement = classBlock(notifier);
-        AllureAndroidListener listener = new AllureAndroidListener();
-
         try {
-            notifier.addListener(listener);
-            listener.testRunStarted(getDescription());
             statement.evaluate();
-        } catch (AssumptionViolatedException e) {
+        } catch (AssumptionViolatedException ave) {
             testNotifier.fireTestIgnored();
-        } catch (StoppedByUserException e) {
-            throw e;
-        } catch (Throwable e) {
-            try {
-                listener.testFailure(new Failure(getDescription(), e));
-                notifier.removeListener(listener);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-
-           // retry(notifier, testNotifier, statement, e, getDescription());
+        } catch (StoppedByUserException sbue) {
+            throw sbue;
+        } catch (Throwable t) {
+            System.out.println("Retry class: " + getDescription().getDisplayName());
+            retry(testNotifier, statement, t, getDescription());
         }
     }
 
@@ -56,15 +42,11 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
         if (method.getAnnotation(Ignore.class) != null) {
             notifier.fireTestIgnored(description);
         } else {
-            runTestUnit(methodBlock(method), description, notifier);
+            runTest(methodBlock(method), description, notifier);
         }
     }
 
-    /**
-     * Runs a {@link Statement} that represents a leaf (aka atomic) test.
-     */
-    protected final void runTestUnit(Statement statement, Description description,
-                                     RunNotifier notifier) {
+    private void runTest(Statement statement, Description description, RunNotifier notifier) {
         EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
         eachNotifier.fireTestStarted();
         try {
@@ -72,35 +54,24 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
         } catch (AssumptionViolatedException e) {
             eachNotifier.addFailedAssumption(e);
         } catch (Throwable e) {
-            retry(notifier, eachNotifier, statement, e, description);
+            System.out.println("Retry test: " + description.getDisplayName());
+            retry(eachNotifier, statement, e, description);
         } finally {
             eachNotifier.fireTestFinished();
         }
     }
 
-    public void retry(RunNotifier runNotifier, EachTestNotifier notifier, Statement statement, Throwable currentThrowable, Description des) {
+    private void retry(EachTestNotifier notifier, Statement statement, Throwable currentThrowable, Description info) {
+        int failedAttempts = 0;
         Throwable caughtThrowable = currentThrowable;
-
-
-        while (retryCount > failedAttempts) {
-            AllureAndroidListener listener = new AllureAndroidListener();
-
+        while (RETRY_COUNT > failedAttempts) {
             try {
-                runNotifier.addListener(listener);
-                listener.testStarted(des);
+                System.out.println("Retry attempt " + (failedAttempts + 1) + " for " + info.getDisplayName());
                 statement.evaluate();
                 return;
             } catch (Throwable t) {
                 failedAttempts++;
                 caughtThrowable = t;
-                try {
-                    listener.testFailure(new Failure(des, t));
-                    runNotifier.removeListener(listener);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-
-
             }
         }
         notifier.addFailure(caughtThrowable);
