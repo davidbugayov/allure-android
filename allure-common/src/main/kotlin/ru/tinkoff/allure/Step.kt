@@ -1,9 +1,6 @@
 package ru.tinkoff.allure
 
-import ru.tinkoff.allure.model.Parameter
-import ru.tinkoff.allure.model.Status
-import ru.tinkoff.allure.model.StatusDetails
-import ru.tinkoff.allure.model.StepResult
+import ru.tinkoff.allure.model.*
 
 /**
  * @author b.mukvich on 31.05.2017.
@@ -31,12 +28,22 @@ class Step {
     private val lifecycle: AllureLifecycle = AllureCommonLifecycle
 
     fun stepCompleted() =
-            lifecycle.updateStep { if (status == null) status = Status.PASSED }
+            lifecycle.updateStep {
+                if (status == null) {
+                    if (warnings.isEmpty()) {
+                        status = Status.PASSED
+                    } else {
+                        status = Status.BROKEN
+                        statusDetails = StatusDetails.fromString(warnings.toString())
+                    }
+                }
+            }
 
     fun stepStart(name: String, vararg params: Parameter) {
         val step = StepResult().apply {
             this.name = name
             parameters.addAll(params)
+            warnings.clear()
         }
         lifecycle.startStep(step)
     }
@@ -44,11 +51,18 @@ class Step {
     fun stepThrown(t: Throwable) {
         with(lifecycle) {
             updateStep {
-                status = Status.fromThrowable(t)
+                status = Status.FAILED
                 statusDetails = StatusDetails.fromThrowable(t)
             }
         }
     }
 
     fun stepStop() = lifecycle.stopStep()
+
+    companion object {
+        @JvmStatic
+        fun addWarning(warning: String) {
+            AllureStorage.getStep(AllureStorage.getCurrentStep()).warnings.add(warning)
+        }
+    }
 }

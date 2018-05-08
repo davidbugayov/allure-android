@@ -122,7 +122,7 @@ open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureComm
     @Throws(Exception::class)
     override fun testFailure(failure: Failure) {
         lifecycle.updateTestCase {
-            status = Status.fromThrowable(failure.exception)
+            status = Status.FAILED
             statusDetails = StatusDetails.fromThrowable(failure.exception)
         }
     }

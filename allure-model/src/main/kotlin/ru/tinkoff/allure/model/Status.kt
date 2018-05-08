@@ -16,15 +16,5 @@ enum class Status(val s: String) {
     SKIPPED("skipped"),
     @SerializedName("unknown")
     UNKNOWN("unknown");
-
-    companion object {
-        @JvmStatic
-        fun fromThrowable(e: Throwable?): Status {
-            when (e) {
-                is AssertionError -> return Status.FAILED
-                else -> return Status.BROKEN
-            }
-        }
-    }
 }
 
