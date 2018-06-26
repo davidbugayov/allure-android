@@ -23,7 +23,7 @@ fun deviceScreenshot(tag: String) {
 
 private fun getTmpFile(prefix: String): File {
     return try {
-        createTempDir(prefix, null, Environment.getExternalStorageDirectory())
+        createTempFile(prefix, null, Environment.getExternalStorageDirectory())
     } catch (e: IOException) {
         val context = ContextHolder.getTargetAppContext()
         val applicationInfo = context.applicationInfo
