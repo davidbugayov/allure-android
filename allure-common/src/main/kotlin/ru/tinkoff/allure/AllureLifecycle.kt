@@ -156,7 +156,7 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
         }
     }
 
-    open fun addAttachmentToReport(name: String?, type: String?, fileExtension: String?, fileName: String) {
+    open fun addAttachmentToReport(name: String?, type: String?, fileName: String) {
         val uuid = AllureStorage.getCurrentStep()
         val attachment = Attachment(
                 name = if (name.isNullOrBlank()) null else name,
@@ -171,7 +171,7 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
 
     open fun prepareAttachment(name: String?, type: String?, fileExtension: String?): File {
         val fileName = generateAttachmentFileName(UUID.randomUUID().toString(), fileExtension)
-        addAttachmentToReport(name, type, fileExtension, fileName)
+        addAttachmentToReport(name, type, fileName)
         return File(fileName)
     }
 }

@@ -8,6 +8,14 @@ import ru.tinkoff.allure.android.Constants.ATTACHMENT
 import java.io.File
 import java.io.InputStream
 
+val TYPE_IMAGE_PNG = "image/png"
+val TYPE_IMAGE_JPG = "image/jpg"
+val TYPE_TEXT_HTML = "text/html"
+val TYPE_TEXT_JSON = "text/json"
+val TYPE_TEXT_XML = "text/xml"
+val TYPE_VIDEO_MP4 = "video/mp4"
+val TYPE_VIDEO_TS = "video/ts"
+
 fun attachFile(tag: String, type: String, fileExtension: String, file : File) =
     AllureAndroidLifecycle.addAttachment(tag, type, fileExtension, file)
 
@@ -19,10 +27,5 @@ fun attachFile(tag: String, type: String, fileExtension: String, input : InputSt
         }
     })
 
-fun addAttachmentToReport(name: String?, type: String?, fileExtension: String?, fileName: String) =
-        AllureAndroidLifecycle.addAttachmentToReport(name, type, fileExtension, fileName)
-
-
-
-
-
+fun addAttachmentToReport(name: String?, type: String?, fileName: String) =
+        AllureAndroidLifecycle.addAttachmentToReport(name, type, fileName)
