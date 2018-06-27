@@ -1,14 +1,11 @@
-package ru.tinkoff.allure.android.sample;
+package ru.tinkoff.allure.android;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import static ru.tinkoff.allure.android.ScreenshotKt.deviceScreenshot;
-
 public class Retry implements TestRule {
     private int retryCount;
-
 
     public Retry(int retryCount) {
         this.retryCount = retryCount;
@@ -23,29 +20,20 @@ public class Retry implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 Throwable caughtThrowable = null;
-                // implement retry logic here
-//                JUnitCore runner = new JUnitCore();
-//                runner.addListener(new AllureAndroidListener());
-//                runner.run(ExampleInstrumentedTest.class);
-                for (int i = 0; i < retryCount; i++) {
 
+                // implement retry logic here
+                for (int i = 0; i < retryCount; i++) {
                     try {
                         base.evaluate();
-                       // return;
+                        return;
                     } catch (Throwable t) {
-                        failshot();
                         caughtThrowable = t;
-                        System.err.println(description.getDisplayName() + ": run " + (i + 1) + " failed");
+                        System.err.println(description.getDisplayName() + ": run " + (i+1) + " failed");
                     }
                 }
                 System.err.println(description.getDisplayName() + ": giving up after " + retryCount + " failures");
                 throw caughtThrowable;
             }
-
         };
-    }
-
-    private void failshot() {
-        deviceScreenshot("failshot");
     }
 }

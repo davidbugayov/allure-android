@@ -48,10 +48,10 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
         }
     }
 
-    open fun writeTestContainer(uuid: String?) {
+    open fun writeTestContainer(uuid: String?, listener: AllureRunListener) {
         AllureStorage.removeContainer(uuid)?.apply {
             beforeContainerWrite(this)
-            writer.write(this)
+            writer.write(this,listener )
             afterContainerWrite(this)
         }
 
@@ -108,15 +108,15 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
 
     }
 
-    open fun writeTestCase() = writeTestCase(AllureStorage.getTest())
+    open fun writeTestCase(listener: AllureRunListener) = writeTestCase(AllureStorage.getTest(),listener)
 
-    open fun writeTestCase(uuid: String) {
+    open fun writeTestCase(uuid: String, listener: AllureRunListener) {
         AllureStorage.getTestResult(uuid)?.apply {
             beforeTestWrite(this)
-            writer.write(this)
+            writer.write(this, listener)
             afterTestWrite(this)
         }
-        // AllureStorage.clearStepContext()
+         //AllureStorage.clearStepContext()
     }
 
     open fun startStep(step: StepResult) = startStep(AllureStorage.getCurrentStep(), step)

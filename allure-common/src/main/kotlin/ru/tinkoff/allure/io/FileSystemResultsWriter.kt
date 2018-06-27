@@ -1,5 +1,6 @@
 package ru.tinkoff.allure.io
 
+import ru.tinkoff.allure.AllureRunListener
 import ru.tinkoff.allure.model.TestResult
 import ru.tinkoff.allure.model.TestResultContainer
 import ru.tinkoff.allure.serialization.SerializationProcessor
@@ -8,6 +9,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
 
 /**
  * @author Badya on 18.04.2017.
@@ -24,15 +26,15 @@ open class FileSystemResultsWriter(val resultsDir: File = FileSystemResultsWrite
         resultsDir.mkdirs()
     }
 
-    override fun write(testResult: TestResult) =
+    override fun write(testResult: TestResult, listener: AllureRunListener) =
             serializationProcessor.serialize(
-                    File(resultsDir, generateTestResultName(testResult.uuid)),
+                    File(resultsDir, generateTestResultName(testResult.uuid + listener.rand)),
                     testResult)
 
 
-    override fun write(testResultContainer: TestResultContainer) =
+    override fun write(testResultContainer: TestResultContainer, listener: AllureRunListener) =
             serializationProcessor.serialize(
-                    File(resultsDir, generateTestResultContainerName(testResultContainer.uuid)),
+                    File(resultsDir, generateTestResultContainerName(testResultContainer.uuid) + listener.rand),
                     testResultContainer)
 
 

@@ -13,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap
  * @author b.mukvich on 01.06.2017.
  */
 open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureCommonLifecycle) : RunListener() {
+
+    val rand = Random().nextInt(100)
+
     private val mainContainer = object : InheritableThreadLocal<String>() {
         public override fun initialValue() = UUID.randomUUID().toString()
     }
@@ -66,7 +69,7 @@ open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureComm
     override fun testStarted(description: Description) {
         // val uuid = AllureStorage.getTest()
         val testResult = TestResult(
-                        uuid = "${description.className}#${description.methodName}",
+                uuid = "${description.className}#${description.methodName}",
                 historyId = getHistoryId(description),
                 name = getMethodDisplayName(description),
                 fullName = "${description.className}.${description.methodName}",
@@ -97,7 +100,7 @@ open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureComm
                 if (status == null) status = Status.PASSED
             }
             stopTestCase()
-            writeTestCase()
+            writeTestCase(this@AllureRunListener)
         }
     }
 
@@ -152,7 +155,7 @@ open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureComm
     protected open fun finalizeContainer(container: String?) {
         with(lifecycle) {
             stopTestContainer(container)
-            writeTestContainer(container)
+            writeTestContainer(container, this@AllureRunListener)
         }
     }
 

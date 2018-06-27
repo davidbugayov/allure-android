@@ -9,11 +9,14 @@ import org.junit.runner.notification.Failure
 import ru.tinkoff.allure.AllureRunListener
 import ru.tinkoff.allure.model.Status
 import ru.tinkoff.allure.model.StatusDetails
+import java.util.*
 
 /**
  * @author Badya on 05.06.2017.
  */
 class AllureAndroidListener : InstrumentationRunListener() {
+
+    val rand = Random().nextInt(100)
     private val lifecycle = AllureAndroidLifecycle
     private val allureListenerDelegate = AllureRunListener(lifecycle)
 
@@ -49,7 +52,7 @@ class AllureAndroidListener : InstrumentationRunListener() {
                 status = Status.FAILED
                 statusDetails = StatusDetails.fromThrowable(failure.exception)
             }
-            writeTestCase(uuid)
+            writeTestCase(uuid, allureListenerDelegate)
         }
     }
 

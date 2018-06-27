@@ -10,6 +10,7 @@ import android.support.test.runner.AndroidJUnitRunner;
  *
  * @author Shackih Pavel
  */
+@SuppressWarnings("unused")
 public class MultiDexAllureAndroidRunner extends AndroidJUnitRunner {
 
     private static final String LISTENER_KEY = "listener";
