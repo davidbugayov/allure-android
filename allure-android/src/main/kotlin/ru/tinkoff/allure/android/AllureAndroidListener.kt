@@ -16,7 +16,6 @@ import java.util.*
  */
 class AllureAndroidListener : InstrumentationRunListener() {
 
-    val rand = Random().nextInt(100)
     private val lifecycle = AllureAndroidLifecycle
     private val allureListenerDelegate = AllureRunListener(lifecycle)
 

@@ -28,14 +28,13 @@ open class FileSystemResultsWriter(val resultsDir: File = FileSystemResultsWrite
 
     override fun write(testResult: TestResult, listener: AllureRunListener) =
             serializationProcessor.serialize(
-                    File(resultsDir, generateTestResultName(testResult.uuid + listener.rand)),
+                    File(resultsDir, generateTestResultName(testResult.uuid + listener.hashCode())),
                     testResult)
 
 
-    override fun write(testResultContainer: TestResultContainer, listener: AllureRunListener?) =
+    override fun write(testResultContainer: TestResultContainer) =
             serializationProcessor.serialize(
-                    File(resultsDir, generateTestResultContainerName(testResultContainer.uuid) + (listener?.rand
-                            ?: "")),
+                    File(resultsDir, generateTestResultContainerName(testResultContainer.uuid)),
                     testResultContainer)
 
 

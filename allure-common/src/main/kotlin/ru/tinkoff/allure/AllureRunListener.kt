@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap
  */
 open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureCommonLifecycle) : RunListener() {
 
-    val rand = Random().nextInt(100)
 
     private val mainContainer = object : InheritableThreadLocal<String>() {
         public override fun initialValue() = UUID.randomUUID().toString()

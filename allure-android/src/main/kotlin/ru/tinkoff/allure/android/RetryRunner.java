@@ -22,7 +22,7 @@ import ru.tinkoff.allure.utils.ExceptionUtilsKt;
 
 public class RetryRunner extends BlockJUnit4ClassRunner {
 
-    private final int retryCount = 5;
+    private final int retryCount = 2;
     private int failedAttempts = 0;
 
     public RetryRunner(Class<?> klass) throws InitializationError {
@@ -85,6 +85,7 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
         Throwable caughtThrowable = currentThrowable;
         while (retryCount > failedAttempts) {
             AllureAndroidListener listener = new AllureAndroidListener();
+            runNotifier.addListener(listener);
             try {
                 listener.testStarted(description);
             } catch (Exception e) {
@@ -112,7 +113,8 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
                             "Failure finish test" + ExceptionUtilsKt.getStringTrace(e));
                 }
             }
-            runNotifier.addListener(listener);
+
+            runNotifier.removeListener(listener);
         }
         notifier.addFailure(caughtThrowable);
 

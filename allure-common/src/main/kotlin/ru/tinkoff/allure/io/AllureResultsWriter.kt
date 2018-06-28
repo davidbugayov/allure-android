@@ -11,7 +11,7 @@ import java.io.InputStream
  */
 interface AllureResultsWriter {
     fun write(testResult: TestResult, listener: AllureRunListener)
-    fun write(testResultContainer: TestResultContainer, listener: AllureRunListener?)
+    fun write(testResultContainer: TestResultContainer)
     fun write(dest: String, attachment: InputStream)
     fun copy(src: File, dest: File)
     fun move(src: File, dest: File)
