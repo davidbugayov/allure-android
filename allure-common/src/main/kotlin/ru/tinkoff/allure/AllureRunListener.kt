@@ -155,7 +155,7 @@ open class AllureRunListener(private val lifecycle: AllureLifecycle = AllureComm
     protected open fun finalizeContainer(container: String?) {
         with(lifecycle) {
             stopTestContainer(container)
-            writeTestContainer(container, this@AllureRunListener)
+            writeTestContainer(container)
         }
     }
 

@@ -48,10 +48,10 @@ abstract class AllureLifecycle(private val reader: AllureResultsReader,
         }
     }
 
-    open fun writeTestContainer(uuid: String?, listener: AllureRunListener) {
+    open fun writeTestContainer(uuid: String?) {
         AllureStorage.removeContainer(uuid)?.apply {
             beforeContainerWrite(this)
-            writer.write(this,listener )
+            writer.write(this,null )
             afterContainerWrite(this)
         }
 
