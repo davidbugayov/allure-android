@@ -6,17 +6,12 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
-import android.support.test.runner.AndroidJUnitRunner
+
 import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import ru.tinkoff.allure.AllureRunner
-import ru.tinkoff.allure.android.FailshotRule
-import ru.tinkoff.allure.android.RetryFailShotRule
-import ru.tinkoff.allure.android.RetryRunner
-import ru.tinkoff.allure.android.step
+import ru.tinkoff.allure.android.*
 import java.util.*
 
 @RunWith(RetryRunner::class)
@@ -33,16 +28,13 @@ class ExampleInstrumentedTest {
 
     @Test
     fun failedTest() {
-        step("test") {
+        step("Test" , Runnable {
             activityTestRule.launchActivity(Intent(InstrumentationRegistry.getTargetContext(), MainActivity::class.java))
             onView(withId(R.id.hello_text_view)).perform(click())
             if (true) {
-                if (Random().nextBoolean()) {
                     fail("fail test")
-                } else {
-                    fail("olololololololol")
-                }
+
             }
-        }
+        })
     }
 }

@@ -20,18 +20,6 @@ public class MultiDexAllureAndroidRunner extends AndroidJUnitRunner {
     public void onCreate(Bundle arguments) {
         MultiDex.installInstrumentation(getContext(), getTargetContext());
         ContextHolder.setTargetAppContext(getTargetContext());
-        applyListener(arguments);
         super.onCreate(arguments);
-    }
-
-    private void applyListener(Bundle bundle) {
-        CharSequence listener = bundle.getCharSequence(LISTENER_KEY);
-        CharSequence allureListener = AllureAndroidListener.class.getName();
-        if (listener == null) {
-            listener = allureListener;
-        } else {
-            listener = listener + COMMA + allureListener;
-        }
-        bundle.putCharSequence(LISTENER_KEY, listener);
     }
 }

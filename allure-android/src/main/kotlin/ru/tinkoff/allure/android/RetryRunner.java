@@ -20,7 +20,7 @@ import ru.tinkoff.allure.AllureRunListener;
 import ru.tinkoff.allure.utils.ExceptionUtilsKt;
 
 
-public class RetryRunner extends BlockJUnit4ClassRunner {
+public abstract class RetryRunner extends BlockJUnit4ClassRunner {
 
     /**
      * количество запусков теста
@@ -99,9 +99,7 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
             } catch (Throwable t) {
                 caughtThrowable = t;
                 try {
-                    if (failedAttempts < retryCount - 1) {
-                        listener.testFailure(new Failure(description, t));
-                    }
+                    listener.testFailure(new Failure(description, t));
                 } catch (Exception e) {
                     System.err.println(description.getDisplayName() +
                             "Failure failure test" + ExceptionUtilsKt.getStringTrace(e));
@@ -109,21 +107,21 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
                 failedAttempts++;
             } finally {
                 try {
-                    if (failedAttempts < retryCount - 1) {
-                        listener.testFinished(description);
-                    }
+                    listener.testFinished(description);
                 } catch (Exception e) {
                     System.err.println(description.getDisplayName() +
                             "Failure finish test" + ExceptionUtilsKt.getStringTrace(e));
                 }
                 runNotifier.removeListener(listener);
+                clearAllActivities();
             }
         }
         notifier.addFailure(caughtThrowable);
 
     }
 
-//    abstract void cleanAllActivities(){
-//
-//    }
+    /**
+     * метод для закрытия приложения
+     */
+    protected abstract void clearAllActivities();
 }
