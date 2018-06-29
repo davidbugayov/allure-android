@@ -22,7 +22,13 @@ import ru.tinkoff.allure.utils.ExceptionUtilsKt;
 
 public class RetryRunner extends BlockJUnit4ClassRunner {
 
+    /**
+     * количество запусков теста
+     */
     private final int retryCount = 2;
+    /**
+     * порог падений, который допускается для прохождения теста
+     */
     private int failedAttempts = 0;
 
     public RetryRunner(Class<?> klass) throws InitializationError {
@@ -32,11 +38,10 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
 
     @Override
     public void run(final RunNotifier notifier) {
+        Throwable currentThrowable = null;
         Description description = getDescription();
         EachTestNotifier testNotifier = new EachTestNotifier(notifier,
                 description);
-       // AllureRunListener allureRunListener = new AllureRunListener();
-       // notifier.addListener(allureRunListener);
         Statement statement = classBlock(notifier);
         try {
             statement.evaluate();
@@ -46,9 +51,6 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
             throw e;
         } catch (Throwable e) {
             retry(description, testNotifier, statement, e, notifier);
-        } finally {
-           // allureRunListener.testRunFinished();
-          //  notifier.removeListener(allureRunListener);
         }
 
     }
@@ -112,9 +114,10 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
                     System.err.println(description.getDisplayName() +
                             "Failure finish test" + ExceptionUtilsKt.getStringTrace(e));
                 }
+                runNotifier.removeListener(listener);
             }
 
-            runNotifier.removeListener(listener);
+
         }
         notifier.addFailure(caughtThrowable);
 

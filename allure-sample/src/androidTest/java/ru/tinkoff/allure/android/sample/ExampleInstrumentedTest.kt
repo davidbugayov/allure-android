@@ -36,13 +36,13 @@ class ExampleInstrumentedTest {
         step("test") {
             activityTestRule.launchActivity(Intent(InstrumentationRegistry.getTargetContext(), MainActivity::class.java))
             onView(withId(R.id.hello_text_view)).perform(click())
-            if (true) {
-                if (Random().nextBoolean()) {
-                    fail("fail test")
-                } else {
-                    fail("olololololololol")
-                }
-            }
+//            if (true) {
+//                if (Random().nextBoolean()) {
+//                    fail("fail test")
+//                } else {
+//                    fail("olololololololol")
+//                }
+//            }
         }
     }
 }
