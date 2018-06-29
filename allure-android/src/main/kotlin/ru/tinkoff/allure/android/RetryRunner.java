@@ -25,7 +25,7 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
     /**
      * количество запусков теста
      */
-    private final int retryCount = 2;
+    private final int retryCount = 3;
     /**
      * порог падений, который допускается для прохождения теста
      */
@@ -38,7 +38,6 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
 
     @Override
     public void run(final RunNotifier notifier) {
-        Throwable currentThrowable = null;
         Description description = getDescription();
         EachTestNotifier testNotifier = new EachTestNotifier(notifier,
                 description);
@@ -98,28 +97,33 @@ public class RetryRunner extends BlockJUnit4ClassRunner {
                 statement.evaluate();
                 return;
             } catch (Throwable t) {
-                failedAttempts++;
                 caughtThrowable = t;
                 try {
-                    listener.testFailure(new Failure(description, t));
+                    if (failedAttempts < retryCount - 1) {
+                        listener.testFailure(new Failure(description, t));
+                    }
                 } catch (Exception e) {
                     System.err.println(description.getDisplayName() +
                             "Failure failure test" + ExceptionUtilsKt.getStringTrace(e));
                 }
-            }
-            finally {
+                failedAttempts++;
+            } finally {
                 try {
-                    listener.testFinished(description);
+                    if (failedAttempts < retryCount - 1) {
+                        listener.testFinished(description);
+                    }
                 } catch (Exception e) {
                     System.err.println(description.getDisplayName() +
                             "Failure finish test" + ExceptionUtilsKt.getStringTrace(e));
                 }
                 runNotifier.removeListener(listener);
             }
-
-
         }
         notifier.addFailure(caughtThrowable);
 
     }
+
+//    abstract void cleanAllActivities(){
+//
+//    }
 }
