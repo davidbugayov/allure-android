@@ -56,6 +56,8 @@ class Step {
 /**
  * Метод для вызова шага с скриншотом
  */
+
+@JvmOverloads
 fun stepWithScreen(description: String, parameters: Parameters.Builder? = null, block: Runnable) {
     return stepWithScreen(description, parameters) { block.run() }
 }
@@ -83,6 +85,7 @@ private fun stepWithScreen(description: String, parameters: Parameters.Builder? 
 /**
  * Метод для вызова шага без скриншота
  */
+@JvmOverloads
 fun step(description: String,  block: Runnable, parameters: Parameters.Builder? = null) {
     return step(description, parameters) { block.run() }
 }
