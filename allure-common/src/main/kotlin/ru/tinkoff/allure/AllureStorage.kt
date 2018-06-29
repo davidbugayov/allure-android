@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * @author Badya on 18.04.2017.
  */
-internal object AllureStorage {
+ object AllureStorage {
     private val storage: MutableMap<String, Any> = ConcurrentHashMap()
 
     private val currentStepContext: ThreadLocal<LinkedList<String?>> = object : InheritableThreadLocal<LinkedList<String?>>() {

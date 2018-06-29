@@ -1,5 +1,8 @@
-package ru.tinkoff.allure
+package ru.tinkoff.allure.android
 
+import ru.tinkoff.allure.AllureCommonLifecycle
+import ru.tinkoff.allure.AllureLifecycle
+import ru.tinkoff.allure.AllureStorage
 import ru.tinkoff.allure.model.*
 
 /**
@@ -63,6 +66,59 @@ class Step {
         @JvmStatic
         fun addWarning(warning: String) {
             AllureStorage.getStep(AllureStorage.getCurrentStep()).warnings.add(warning)
+        }
+    }
+}
+
+/**
+ * Метод для вызова шага с скриншотом
+ */
+fun stepWithScreen(description: String, parameters: Parameters.Builder? = null, block: Runnable){
+    return stepWithScreen(description,parameters) { block.run() }
+}
+
+fun stepWithScreen(description: String, parameters: Parameters.Builder? = null, block: () -> Unit) {
+    with(Step()) {
+        if (parameters != null) {
+            stepStart(description, *parameters.build().parameters)
+        } else {
+            stepStart(description, *emptyArray())
+        }
+        try {
+            block.invoke()
+            stepCompleted()
+        } catch (t: Throwable) {
+            stepThrown(t)
+            throw t
+        } finally {
+            deviceScreenshot("screenshot")
+            stepStop()
+        }
+    }
+}
+
+/**
+ * Метод для вызова шага без скриншота
+ */
+fun  stepWithoutScreen(description: String, parameters: Parameters.Builder? = null, block: Runnable) {
+    return stepWithoutScreen(description,parameters) { block.run() }
+}
+
+fun stepWithoutScreen(description: String, parameters: Parameters.Builder? = null, block: () -> Unit) {
+    with(Step()) {
+        if (parameters != null) {
+            stepStart(description, *parameters.build().parameters)
+        } else {
+            stepStart(description, *emptyArray())
+        }
+        try {
+            block.invoke()
+            stepCompleted()
+        } catch (t: Throwable) {
+            stepThrown(t)
+            throw t
+        } finally {
+            stepStop()
         }
     }
 }
